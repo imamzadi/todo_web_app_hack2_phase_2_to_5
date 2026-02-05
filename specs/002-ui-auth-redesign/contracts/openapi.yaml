@@ -1,0 +1,333 @@
+openapi: 3.0.0
+info:
+  title: Todo Web App API with BetterAuth
+  version: 1.0.0
+  description: API for the Todo Web Application, integrated with BetterAuth for authentication.
+
+servers:
+  - url: http://localhost:8000
+    description: Local development server
+
+components:
+  securitySchemes:
+    BetterAuthJWT:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JSON Web Token issued by BetterAuth
+
+security:
+  - BetterAuthJWT: []
+
+paths:
+  /auth/signup:
+    post:
+      summary: Register a new user
+      description: Registers a new user through BetterAuth.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - email
+                - password
+              properties:
+                username:
+                  type: string
+                  example: newuser
+                email:
+                  type: string
+                  format: email
+                  example: newuser@example.com
+                password:
+                  type: string
+                  format: password
+                  example: strong-password
+      responses:
+        '200':
+          description: User successfully registered.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User successfully registered via BetterAuth.
+        '400':
+          description: Bad request (e.g., email already registered)
+  
+  /auth/token:
+    post:
+      summary: Authenticate user and get BetterAuth token
+      description: Authenticates a user and returns a JWT issued by BetterAuth.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                  example: testuser
+                password:
+                  type: string
+                  format: password
+                  example: testpassword
+      responses:
+        '200':
+          description: Successful authentication.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                  token_type:
+                    type: string
+                    example: bearer
+        '401':
+          description: Invalid credentials
+
+  /auth/me:
+    get:
+      summary: Get current authenticated user details
+      description: Retrieves the details of the currently authenticated user based on the BetterAuth JWT.
+      security:
+        - BetterAuthJWT: []
+      responses:
+        '200':
+          description: Current user details.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  username:
+                    type: string
+                    example: currentuser
+                  email:
+                    type: string
+                    example: currentuser@example.com
+                  is_active:
+                    type: boolean
+                    example: true
+                  create_date:
+                    type: string
+                    format: date-time
+                  update_date:
+                    type: string
+                    format: date-time
+        '401':
+          description: Unauthorized
+
+  /tasks:
+    get:
+      summary: Get user's tasks
+      description: Retrieves a list of tasks for the authenticated user.
+      security:
+        - BetterAuthJWT: []
+      parameters:
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            example: 0
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            example: 10
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            example: pending
+      responses:
+        '200':
+          description: List of tasks.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object # Placeholder for TaskPublic schema
+                  properties:
+                    id:
+                      type: integer
+                    title:
+                      type: string
+                    description:
+                      type: string
+                    status:
+                      type: string
+                    owner_id:
+                      type: integer
+                    create_date:
+                      type: string
+                    update_date:
+                      type: string
+    post:
+      summary: Create a new task
+      description: Creates a new task for the authenticated user.
+      security:
+        - BetterAuthJWT: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+              properties:
+                title:
+                  type: string
+                  example: Buy groceries
+                description:
+                  type: string
+                  example: Milk, eggs, bread
+      responses:
+        '200':
+          description: Task created successfully.
+          content:
+            application/json:
+              schema:
+                type: object # Placeholder for TaskPublic schema
+                properties:
+                    id:
+                      type: integer
+                    title:
+                      type: string
+                    description:
+                      type: string
+                    status:
+                      type: string
+                    owner_id:
+                      type: integer
+                    create_date:
+                      type: string
+                    update_date:
+                      type: string
+  
+  /tasks/{task_id}:
+    get:
+      summary: Get a single task
+      description: Retrieves a single task by its ID for the authenticated user.
+      security:
+        - BetterAuthJWT: []
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Task details.
+          content:
+            application/json:
+              schema:
+                type: object # Placeholder for TaskPublic schema
+                properties:
+                    id:
+                      type: integer
+                    title:
+                      type: string
+                    description:
+                      type: string
+                    status:
+                      type: string
+                    owner_id:
+                      type: integer
+                    create_date:
+                      type: string
+                    update_date:
+                      type: string
+        '404':
+          description: Task not found or not owned by user
+    put:
+      summary: Update an existing task
+      description: Updates an existing task by its ID for the authenticated user.
+      security:
+        - BetterAuthJWT: []
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: Buy organic groceries
+                description:
+                  type: string
+                  example: Organic milk, cage-free eggs, whole wheat bread
+                status:
+                  type: string
+                  example: completed
+      responses:
+        '200':
+          description: Task updated successfully.
+          content:
+            application/json:
+              schema:
+                type: object # Placeholder for TaskPublic schema
+                properties:
+                    id:
+                      type: integer
+                    title:
+                      type: string
+                    description:
+                      type: string
+                    status:
+                      type: string
+                    owner_id:
+                      type: integer
+                    create_date:
+                      type: string
+                    update_date:
+                      type: string
+        '404':
+          description: Task not found or not owned by user
+    delete:
+      summary: Delete a task
+      description: Deletes a task by its ID for the authenticated user.
+      security:
+        - BetterAuthJWT: []
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '204':
+          description: Task deleted successfully.
+        '404':
+          description: Task not found or not owned by user
