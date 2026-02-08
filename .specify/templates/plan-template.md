@@ -31,13 +31,10 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-- Principle I: Directory Structure (`/backend`, `/frontend`)
-- Principle II: Backend Technology (Python 3.12+, FastAPI, SQLModel, Neon, uv)
-- Principle III: Frontend Technology (Next.js 15+, Tailwind, Lucide, Better Auth)
-- Principle IV: Security Protocol (Zero-Trust API, JWT, user_id scoping)
-- Principle V: AI Agent Context (`GEMINI.md` in every folder)
-- Principle VI: Environment Management (`.env` files)
-- Principle VII: Help and Documentation (Context7)
+- Principle I: Objective (Deploy to Minikube with AIOps)
+- Principle II: Rule of Tooling (Zero Manual YAML, `docker ai`, `kubectl-ai`, `kagent`, Helm)
+- Principle III: Execution Workflow (Spec, Containerize, Deploy, Validate)
+- Principle IV: Technical Requirements (Separate containers, 2 frontend replicas, Neon DB, AIOps history)
 
 ## Project Structure
 
@@ -54,28 +51,9 @@ specs/[###-feature]/
 ```
 
 ### Source Code (repository root)
-<!--
-  The constitution mandates a web application structure.
--->
+The constitution has shifted focus from a rigid directory structure to a workflow and tooling-centric approach for deployment. The existing `backend` and `frontend` structure remains, but the new principles govern how they are containerized and deployed.
 
-```text
-# Web application (frontend + backend)
-backend/
-├── src/
-│   ├── models/
-│   ├── services/
-│   └── api/
-└── tests/
-
-frontend/
-├── src/
-│   ├── components/
-│   ├── pages/
-│   └── services/
-└── tests/
-```
-
-**Structure Decision**: The project structure is mandated by the constitution. All new features will adhere to the `backend`/`frontend` layout.
+**Structure Decision**: The project structure will now be oriented around containerization and Kubernetes deployment artifacts, managed via AIOps tools. Helm charts will become a key structural element.
 
 ## Complexity Tracking
 

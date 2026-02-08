@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Send, User as UserIcon, Bot, Loader2 } from 'lucide-react';
+import { Send, User as UserIcon, Bot, Loader2, Sparkles, Cpu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Input } from '@/components/ui/input';
@@ -16,7 +16,7 @@ interface Message {
 
 interface ChatWindowProps {
   conversationId: number;
-  className?: string; // For flexibility
+  className?: string;
 }
 
 export function ChatWindow({ conversationId, className }: ChatWindowProps) {
@@ -27,7 +27,6 @@ export function ChatWindow({ conversationId, className }: ChatWindowProps) {
   const [isFetchingHistory, setIsFetchingHistory] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Fetch history when conversationId changes
   useEffect(() => {
     const fetchHistory = async () => {
       setIsFetchingHistory(true);
@@ -39,7 +38,6 @@ export function ChatWindow({ conversationId, className }: ChatWindowProps) {
         );
         if (response.ok) {
           const data = await response.json();
-          // Map backend messages to frontend format
           if (data.messages) {
             setMessages(data.messages);
           } else {
@@ -58,8 +56,6 @@ export function ChatWindow({ conversationId, className }: ChatWindowProps) {
     }
   }, [conversationId, token]);
 
-
-  // Auto-scroll to bottom
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -106,61 +102,77 @@ export function ChatWindow({ conversationId, className }: ChatWindowProps) {
   };
 
   return (
-    <div className={cn("flex flex-col h-full bg-zinc-950 text-white", className)}>
-      <ScrollArea className="flex-1 p-4">
-        <div className="space-y-6">
+    <div className={cn("flex flex-col h-full bg-transparent text-white", className)}>
+      <ScrollArea className="flex-1 px-6 py-4">
+        <div className="space-y-8 pb-4">
           {isFetchingHistory ? (
-            <div className="flex justify-center items-center h-full mt-10">
-              <Loader2 className="h-6 w-6 animate-spin text-zinc-500" />
+            <div className="flex flex-col justify-center items-center h-full mt-20 gap-4">
+              <div className="relative">
+                <div className="absolute inset-0 bg-blue-500/20 blur-xl animate-pulse rounded-full" />
+                <Loader2 className="h-10 w-10 animate-spin text-blue-400 relative" />
+              </div>
+              <p className="text-white/20 text-xs font-black uppercase tracking-[0.2em]">Syncing History</p>
             </div>
           ) : messages.length === 0 ? (
-            <div className="text-center text-zinc-500 text-sm mt-20">
-              <Bot className="mx-auto h-12 w-12 mb-4 opacity-50" />
-              <p>Start a conversation with your AI Assistant.</p>
+            <div className="text-center text-white/20 mt-20 flex flex-col items-center gap-6 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+              <div className="p-5 rounded-3xl bg-white/[0.02] border border-white/5 shadow-2xl">
+                <Sparkles className="h-12 w-12 opacity-30" />
+              </div>
+              <div className="space-y-2">
+                <p className="text-xl font-black tracking-tighter uppercase italic">Neutral State</p>
+                <p className="text-xs font-bold leading-relaxed max-w-[200px] mx-auto opacity-50">Initiate a query to begin processing.</p>
+              </div>
             </div>
           ) : (
             messages.map((msg, index) => (
               <div
                 key={index}
                 className={cn(
-                  "flex items-start gap-4 text-sm max-w-[85%]",
-                  msg.role === 'user' ? "ml-auto flex-row-reverse" : "mr-auto flex-row"
+                  "flex items-start gap-4 text-sm animate-in fade-in slide-in-from-bottom-2 duration-500",
+                  msg.role === 'user' ? "ml-auto flex-row-reverse max-w-[90%]" : "mr-auto flex-row max-w-[90%]"
                 )}
               >
                 <div
                   className={cn(
-                    "w-8 h-8 rounded-full flex items-center justify-center shrink-0 border border-white/5",
+                    "w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 border border-white/5 shadow-xl transition-transform hover:scale-110",
                     msg.role === 'user'
-                      ? "bg-violet-600 text-white"
-                      : "bg-zinc-800 text-zinc-300"
+                      ? "bg-gradient-to-br from-indigo-500 to-purple-600 text-white"
+                      : "bg-white/5 text-cyan-400 backdrop-blur-xl"
                   )}
                 >
-                  {msg.role === 'user' ? <UserIcon size={16} /> : <Bot size={16} />}
+                  {msg.role === 'user' ? <UserIcon size={20} /> : <Bot size={20} />}
                 </div>
 
-                <div className="flex flex-col gap-1">
+                <div className={cn("flex flex-col gap-2", msg.role === 'user' ? "items-end" : "items-start")}>
                   <div
                     className={cn(
-                      "rounded-2xl px-4 py-2.5 shadow-sm leading-relaxed",
+                      "rounded-[1.5rem] px-5 py-3.5 shadow-2xl leading-relaxed text-[15px] font-medium transition-all hover:bg-white/[0.05]",
                       msg.role === 'user'
-                        ? "bg-violet-600 text-white rounded-tr-sm"
-                        : "bg-zinc-900 border border-white/10 text-zinc-200 rounded-tl-sm"
+                        ? "bg-indigo-600/20 border border-indigo-500/30 text-indigo-100 rounded-tr-none"
+                        : "bg-white/[0.03] border border-white/10 text-white/90 rounded-tl-none backdrop-blur-md"
                     )}
                   >
                     <p className="whitespace-pre-wrap">{msg.content}</p>
                   </div>
+                  <span className="text-[10px] font-black uppercase tracking-widest opacity-20 px-1">
+                    {msg.role === 'user' ? 'Client' : 'Assistant'}
+                  </span>
                 </div>
               </div>
             ))
           )}
 
           {isLoading && (
-            <div className="flex items-start gap-4 text-sm max-w-[85%] mr-auto">
-              <div className="w-8 h-8 rounded-full bg-zinc-800 text-zinc-300 flex items-center justify-center shrink-0 border border-white/5">
-                <Bot size={16} />
+            <div className="flex items-start gap-4 text-sm max-w-[90%] mr-auto animate-in fade-in slide-in-from-bottom-2 duration-500">
+              <div className="w-10 h-10 rounded-2xl bg-white/5 text-cyan-400 flex items-center justify-center shrink-0 border border-white/5 shadow-xl backdrop-blur-xl">
+                <Bot size={20} />
               </div>
-              <div className="bg-zinc-900 border border-white/10 rounded-2xl rounded-tl-sm px-4 py-3">
-                <Loader2 className="w-4 h-4 animate-spin text-zinc-500" />
+              <div className="bg-white/[0.03] border border-white/10 rounded-[1.5rem] rounded-tl-none px-6 py-4 backdrop-blur-md">
+                <div className="flex gap-1.5">
+                  <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-bounce [animation-delay:-0.3s]" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-bounce [animation-delay:-0.15s]" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-bounce" />
+                </div>
               </div>
             </div>
           )}
@@ -168,28 +180,34 @@ export function ChatWindow({ conversationId, className }: ChatWindowProps) {
         </div>
       </ScrollArea>
 
-      <div className="p-4 border-t border-white/10 bg-zinc-950">
+      <div className="p-6 border-t border-white/5 bg-white/[0.01] backdrop-blur-md">
         <form
           onSubmit={(e) => {
             e.preventDefault();
             handleSend();
           }}
-          className="flex gap-3 relative"
+          className="flex gap-4 items-end"
         >
-          <Input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Type your message..."
-            disabled={isLoading}
-            className="flex-1 bg-zinc-900 border-white/10 text-white placeholder:text-zinc-500 focus-visible:ring-violet-600 focus-visible:border-violet-600"
-          />
+          <div className="flex-1 relative group">
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-2xl opacity-0 group-focus-within:opacity-20 transition duration-500 blur" />
+            <Input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Query neural network..."
+              disabled={isLoading}
+              className="relative flex-1 bg-white/[0.03] border-white/10 text-white placeholder:text-white/20 h-14 px-6 rounded-2xl focus-visible:ring-0 focus-visible:border-white/20 transition-all font-medium"
+            />
+          </div>
           <Button
             type="submit"
             size="icon"
             disabled={isLoading || !input.trim()}
-            className="bg-violet-600 hover:bg-violet-700 text-white"
+            className={cn(
+              "h-14 w-14 rounded-2xl shadow-xl transition-all duration-300",
+              input.trim() ? "aurora-btn text-white scale-100" : "bg-white/5 text-white/20 scale-95"
+            )}
           >
-            <Send className="w-4 h-4" />
+            {isLoading ? <Loader2 className="w-6 h-6 animate-spin" /> : <Send className="w-6 h-6" />}
             <span className="sr-only">Send</span>
           </Button>
         </form>

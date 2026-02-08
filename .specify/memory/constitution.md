@@ -1,48 +1,49 @@
 <!--
 Sync Impact Report
-- Version change: 0.0.0 → 1.0.0
+- Version change: 1.0.0 → 2.0.0
 - List of modified principles:
-  - PRINCIPLE_1_NAME → I. Directory Structure
-  - PRINCIPLE_2_NAME → II. Backend Technology Stack
-  - PRINCIPLE_3_NAME → III. Frontend Technology Stack
-  - PRINCIPLE_4_NAME → IV. Security Protocol
-  - PRINCIPLE_5_NAME → V. AI Agent Context
-- Added sections:
+  - All principles have been replaced to reflect the new AIOps workflow.
+- Added sections: None
+- Removed sections:
+  - I. Directory Structure
+  - II. Backend Technology Stack
+  - III. Frontend Technology Stack
+  - IV. Security Protocol
+  - V. AI Agent Context
   - Environment Management
   - Help and Documentation
-- Removed sections: None
 - Templates requiring updates:
-  - ✅ .specify/templates/plan-template.md
-  - ✅ .specify/templates/spec-template.md
-  - ✅ .specify/templates/tasks-template.md
+  - ⚠ .specify/templates/plan-template.md
+  - ⚠ .specify/templates/spec-template.md
+  - ⚠ .specify/templates/tasks-template.md
 - Follow-up TODOs: None
 -->
-# Full-Stack TODO Web Application Constitution
+# Phase IV Constitution: Local Kubernetes & AIOps
 
-## Core Principles
+## I. Objective
+The primary objective is to deploy the Phase III Todo Chatbot on a local Kubernetes cluster (Minikube) using an AI-first DevOps workflow.
 
-### I. Directory Structure
-The root folder MUST contain two distinct sub-directories: `/backend` and `/frontend`. This separation of concerns is non-negotiable and ensures a clean architecture.
+## II. Rule of Tooling (Mandatory)
+- **Zero Manual YAML:** Do not manually write .yaml or Dockerfile content.
+- **Docker Operations:** Use `docker ai "[instruction]"` (Gordon) for containerization.
+- **Kubernetes Manifests:** Use `kubectl-ai "[instruction]"` to generate deployments and services.
+- **Cluster Insights:** Use `kagent` for health checks and resource optimization.
+- **Helm Integration:** Package the generated manifests into Helm Charts for versioned deployment.
 
-### II. Backend Technology Stack
-The backend MUST be built using Python 3.12+, FastAPI for the web framework, SQLModel as the ORM for data modeling and interaction, and Neon PostgreSQL as the database. Dependency management MUST be handled with `uv`.
+## III. Execution Workflow
+1. **Spec & Plan:** Use Claude Code to create the Phase 4 spec and task breakdown.
+2. **Containerize:** Invoke `devops_agent` to build images using Gordon.
+3. **Cluster Setup:** Start Minikube and configure the environment to use the local Docker daemon.
+4. **Deploy:** Use `kubectl-ai` to generate the initial deployment, then refactor into a Helm Chart.
+5. **Validation:** Access the application via Minikube tunnel/service and verify chatbot functionality.
 
-### III. Frontend Technology Stack
-The frontend MUST be a Next.js 15+ application using the App Router. Styling MUST be implemented with Tailwind CSS, and icons SHOULD be sourced from Lucide React. Authentication MUST be handled using Better Auth.
-
-### IV. Security Protocol
-A zero-trust API architecture is mandatory. Every API request to the FastAPI backend MUST be authenticated by verifying a JSON Web Token (JWT) issued by Better Auth. All data access MUST be strictly scoped by the authenticated `user_id` to prevent data leakage between users.
-
-### V. AI Agent Context
-To ensure AI agents have sufficient context, every folder within the project MUST contain a `GEMINI.md` file. This file will serve as a living, machine-readable context map for that specific directory, outlining its purpose, contents, and interactions.
-
-## Environment Management
-Project secrets and environment-specific configurations MUST be managed using `.env` files. These files are to be git-ignored. The following variables MUST be defined: `NEON_DATABASE_URL`, `BETTER_AUTH_SECRET`, and `JWT_SECRET`.
-
-## Help and Documentation
-For any questions or to get up-to-date information about frameworks, libraries, or APIs, developers and agents MUST use the Context7 tool. This ensures that development is always based on the latest and most accurate documentation.
+## IV. Technical Requirements
+- Frontend and Backend must be containerized separately.
+- Deployment must include 2 replicas for the frontend.
+- Cluster must connect to the existing Neon DB (Phase III Database).
+- Document all AIOps prompts and their outputs in the /history directory.
 
 ## Governance
 This Constitution is the single source of truth for architectural and development standards in this project. All code contributions, reviews, and automated processes must adhere to these principles. Amendments to this document require a documented proposal, review, and approval process.
 
-**Version**: 1.0.0 | **Ratified**: 2026-01-07 | **Last Amended**: 2026-01-07
+**Version**: 2.0.0 | **Ratified**: 2026-01-07 | **Last Amended**: 2026-02-05

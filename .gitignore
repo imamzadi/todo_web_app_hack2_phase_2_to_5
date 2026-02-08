@@ -15,6 +15,11 @@ dist/
 build/
 *.log
 .env*
+npm-debug.log*
+yarn-error.log
+yarn-debug.log
+.npm/
+
 
 # Universal ignores
 .DS_Store
@@ -24,3 +29,20 @@ Thumbs.db
 .vscode/
 .idea/
 *.log
+
+# Docker
+coverage/
+
+# Kubernetes
+*.secret.yaml
+secrets/
+.kube/
+kubeconfig*
+*.key
+*.crt
+
+# Other
+*.exe
+*.test
+vendor/
+*.out

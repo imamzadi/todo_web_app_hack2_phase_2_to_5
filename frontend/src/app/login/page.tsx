@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth";
-import { Loader2, LogIn } from "lucide-react";
+import { Loader2, LogIn, Mail, Lock, Sparkles, ArrowRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -71,71 +71,112 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-tr from-purple-500/10 via-transparent to-indigo-500/10 p-4">
-      <div className="absolute inset-0 bg-grid-white/[0.05] bg-[size:20px_20px] pointer-events-none" />
-      <Card className="w-full max-w-md border-0 bg-white/10 backdrop-blur-xl shadow-2xl text-white">
-        <CardHeader className="space-y-1 text-center">
-          <div className="flex justify-center mb-4">
-            <div className="p-3 rounded-full bg-white/20">
-              <LogIn className="h-8 w-8 text-white" />
+    <div className="flex min-h-screen items-center justify-center p-4 relative overflow-hidden">
+      {/* Decorative Blur Background */}
+      <div className="absolute top-[20%] left-[10%] w-[30%] h-[30%] rounded-full bg-cyan-500/10 blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-[20%] right-[10%] w-[30%] h-[30%] rounded-full bg-purple-500/10 blur-[100px] pointer-events-none" />
+
+      <Card className="w-full max-w-lg glass-card border-white/5 bg-white/[0.03] backdrop-blur-[40px] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.6)] rounded-[2.5rem] overflow-hidden">
+        <div className="h-1.5 w-full bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600" />
+
+        <CardHeader className="space-y-4 text-center pt-10 pb-8 px-10">
+          <div className="flex justify-center">
+            <div className="p-4 rounded-[1.25rem] bg-white/5 border border-white/10 shadow-inner group">
+              <LogIn className="h-8 w-8 text-cyan-400 group-hover:scale-110 transition-transform duration-300" />
             </div>
           </div>
-          <CardTitle className="text-3xl font-bold tracking-tight">Welcome Back</CardTitle>
-          <CardDescription className="text-slate-200">
-            Enter your credentials to access your workspace
-          </CardDescription>
+          <div className="space-y-2">
+            <CardTitle className="text-4xl font-black tracking-tighter text-white">
+              Welcome <span className="aurora-text">Back</span>
+            </CardTitle>
+            <CardDescription className="text-white/40 text-lg font-medium">
+              Enter your vault and continue your journey.
+            </CardDescription>
+          </div>
         </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="username" className="text-white">Username</Label>
-              <Input
-                id="username"
-                type="text"
-                placeholder="johndoe"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-                disabled={isLoading}
-                className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus-visible:ring-white/30 focus-visible:border-white/50"
-              />
+
+        <CardContent className="px-10 pb-8">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-2.5">
+              <Label htmlFor="username" className="text-white/60 text-sm font-semibold ml-1 uppercase tracking-widest">
+                Username
+              </Label>
+              <div className="relative group">
+                <Input
+                  id="username"
+                  type="text"
+                  placeholder="johndoe"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                  disabled={isLoading}
+                  className="h-14 bg-white/5 border-white/10 text-white placeholder:text-white/20 pl-12 rounded-2xl focus-visible:ring-cyan-500/50 focus-visible:border-cyan-500/50 transition-all duration-300"
+                />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20 group-hover:text-cyan-400/60 transition-colors" />
+              </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="password" className="text-white">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                disabled={isLoading}
-                className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus-visible:ring-white/30 focus-visible:border-white/50"
-              />
+
+            <div className="space-y-2.5">
+              <Label htmlFor="password" className="text-white/60 text-sm font-semibold ml-1 uppercase tracking-widest">
+                Password
+              </Label>
+              <div className="relative group">
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  disabled={isLoading}
+                  className="h-14 bg-white/5 border-white/10 text-white placeholder:text-white/20 pl-12 rounded-2xl focus-visible:ring-purple-500/50 focus-visible:border-purple-500/50 transition-all duration-300"
+                />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20 group-hover:text-purple-400/60 transition-colors" />
+              </div>
             </div>
-            {error && <p className="text-sm text-red-300 font-medium bg-red-500/20 p-2 rounded">{error}</p>}
+
+            {error && (
+              <div className="flex items-center gap-3 p-4 rounded-2xl bg-red-500/10 border border-red-500/20 animate-in fade-in slide-in-from-top-2">
+                <div className="w-1 h-6 bg-red-500 rounded-full" />
+                <p className="text-sm text-red-400 font-medium">{error}</p>
+              </div>
+            )}
+
             <Button
               type="submit"
-              className="w-full bg-white text-purple-600 hover:bg-slate-100 font-semibold text-lg py-6"
+              className="aurora-btn w-full h-16 rounded-2xl font-bold text-lg group shadow-[0_20px_40px_-15px_rgba(6,182,212,0.3)] mt-2"
               disabled={isLoading}
             >
               {isLoading ? (
                 <>
-                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  Logging in...
+                  <Loader2 className="mr-2 h-6 w-6 animate-spin" />
+                  Decrypting...
                 </>
               ) : (
-                "Log in"
+                <span className="flex items-center">
+                  Unlock Workspace
+                  <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </span>
               )}
             </Button>
           </form>
         </CardContent>
-        <CardFooter className="text-sm text-center justify-center text-slate-200">
-          Don't have an account?{" "}
-          <Link href="/signup" className="ml-1 font-semibold text-white hover:underline transition-all">
-            Sign up
-          </Link>
+
+        <CardFooter className="px-10 pb-10 flex flex-col items-center gap-4">
+          <div className="w-full h-px bg-white/5" />
+          <p className="text-white/30 font-medium">
+            New here?{" "}
+            <Link href="/signup" className="text-cyan-400 hover:text-cyan-300 transition-colors hover:underline underline-offset-4 decoration-cyan-400/30">
+              Create an account
+            </Link>
+          </p>
         </CardFooter>
       </Card>
+
+      {/* Footer Branding */}
+      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-2 text-white/10 font-bold tracking-widest text-xs uppercase">
+        <Sparkles className="w-4 h-4" />
+        Secured by TaskFlow Quantum
+      </div>
     </div>
   );
 }

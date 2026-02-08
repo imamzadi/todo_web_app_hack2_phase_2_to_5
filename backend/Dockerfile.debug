@@ -1,0 +1,22 @@
+# Single-stage build for debugging
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install uv for faster dependency management
+RUN pip install uv
+
+# Copy only the dependency files
+COPY pyproject.toml uv.lock ./
+
+# Install dependencies using uv
+RUN uv sync
+
+# Copy the rest of the application code
+COPY . .
+
+# Debug: Find the python executable in .venv
+RUN find /app/.venv -name "python" # cache-buster: 2026-02-07 10:30 AM
+
+# Keep the container running for inspection
+CMD ["tail", "-f", "/dev/null"]

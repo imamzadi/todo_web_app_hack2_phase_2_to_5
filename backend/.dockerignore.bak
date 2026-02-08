@@ -1,0 +1,21 @@
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+env
+venv
+.venv
+Pipfile*
+.git
+.gitignore
+.vscode
+
+# General
+.env*
+*.log
+*.swp
+
+# Tooling
+.idea/
+.vscode/
